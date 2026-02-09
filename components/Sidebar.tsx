@@ -42,7 +42,7 @@ type MenuItem =
 const MENU_ITEMS: MenuItem[] = [
     {
         name: 'Câu hỏi 1',
-        icon:  FileQuestionMark ,
+        icon: FileQuestionMark,
         children: [
             {name: 'Xe giao hàng', href: '/matrix', icon: Van},
         ],
@@ -95,7 +95,7 @@ export default function Sidebar() {
                     pathname.startsWith(child.href + '/')
                 )
             ) {
-                setOpenMenus(prev => ({ ...prev, [item.name]: true }));
+                setOpenMenus(prev => ({...prev, [item.name]: true}));
             }
         });
     }, [pathname]);
@@ -114,7 +114,7 @@ export default function Sidebar() {
                 className="md:hidden fixed top-3 right-3 z-50 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white dark:bg-zinc-800 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-200"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isMobileMenuOpen ? <X className="w-6 h-6"/> : <Menu className="w-6 h-6"/>}
             </button>
 
 
@@ -169,10 +169,10 @@ export default function Sidebar() {
                                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                                 className={`flex items-center gap-2 p-2 rounded-md text-sm
                                                                     ${
-                                                                        childActive
-                                                                            ? 'bg-indigo-50 text-indigo-600'
-                                                                            : 'text-gray-600 hover:bg-gray-100'
-                                                                    }
+                                                                    childActive
+                                                                        ? 'bg-indigo-50 text-indigo-600'
+                                                                        : 'text-gray-600 hover:bg-gray-100'
+                                                                }
                                                                 `}
                                                             >
                                                                 <ChildIcon className="w-4 h-4"/>
@@ -197,10 +197,10 @@ export default function Sidebar() {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className={`flex items-center p-3 rounded-lg
                                             ${
-                                                isActive
-                                                    ? 'bg-indigo-50 text-indigo-600'
-                                                    : 'hover:bg-gray-100 text-gray-700'
-                                            }
+                                            isActive
+                                                ? 'bg-indigo-50 text-indigo-600'
+                                                : 'hover:bg-gray-100 text-gray-700'
+                                        }
                                         `}
                                     >
                                         <Icon className="w-5 h-5"/>
@@ -213,17 +213,10 @@ export default function Sidebar() {
 
                     {/* Bottom */}
                     <div className="absolute bottom-0 left-0 w-full p-4 border-t border-gray-200">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                setIsSettingsOpen(true);
-                            }}
-                            className="flex items-center w-full p-2 rounded-lg hover:bg-gray-100 text-gray-700"
-                        >
-                            <Settings className="w-5 h-5"/>
-                            <span className="ml-3">Cài đặt</span>
-                        </button>
+                        <div className="text-xs text-center text-gray-500 dark:text-gray-400">
+                            <p>© 2026 KGU đánh giá năng lực</p>
+                            <p>beta v1.0</p>
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -235,11 +228,6 @@ export default function Sidebar() {
                     aria-hidden
                 />
             )}
-
-            <SettingsModal
-                open={isSettingsOpen}
-                onClose={() => setIsSettingsOpen(false)}
-            />
         </>
     );
 }
