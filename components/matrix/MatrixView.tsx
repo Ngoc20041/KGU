@@ -2,7 +2,7 @@
 
 import {useRef, useState, useEffect} from 'react'
 import MatrixPageComponent from '@/components/matrix/MatrixPageComponent'
-import {Menu, X, TriangleAlert, ArrowBigLeft} from 'lucide-react'
+import {Menu, X, TriangleAlert, ArrowBigLeft, ArrowRight} from 'lucide-react'
 /* =======================
    Constants
 ======================= */
@@ -14,14 +14,12 @@ const PINCH_ZOOM_SPEED = 0.004
 /* =======================
    Pan & Zoom Hook
 ======================= */
-function usePanZoom(
-    ref: React.RefObject<HTMLDivElement | null>,
-    options?: {
-        initialScale?: number
-        initialX?: number
-        initialY?: number
-        centerOnInit?: boolean
-    }
+function usePanZoom(ref: React.RefObject<HTMLDivElement | null>, options?: {
+                        initialScale?: number
+                        initialX?: number
+                        initialY?: number
+                        centerOnInit?: boolean
+                    }
 ) {
     const state = useRef({
         x: options?.initialX ?? 0,
@@ -220,11 +218,36 @@ function LegendContent() {
                 <b>Chú thích ký hiệu</b>
             </div>
 
-            <div className="text-sm">🚚 Xe giao hàng</div>
-            <div className="text-sm">🟢 Điểm lấy hàng</div>
-            <div className="text-sm">🔺 Điểm giao hàng</div>
-            <div className="text-sm">🟡 Trạm xăng</div>
+            <div className="text-sm flex items-center gap-2">
+                <ArrowRight className='text-red-600'/>
+                Xe giao hàng
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+                <span className="inline-block w-3 h-3 bg-green-500"></span>
+                <span>Điểm lấy hàng</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <span
+                  className="inline-block"
+                  style={{
+                      width: 0,
+                      height: 0,
+                      borderLeft: "6px solid transparent",
+                      borderRight: "6px solid transparent",
+                      borderBottom: "10px solid red",
+                  }}
+              />
+                <span>Điểm giao hàng</span>
+            </div>
 
+            <div className="flex items-center gap-2 text-sm">
+                <span className="inline-block w-3 h-3 rounded-full bg-yellow-500"></span>
+                <span>Trạm xăng</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+                <span className="inline-block w-3 h-3 rounded-full bg-green-500"></span>
+                <span>Điểm dừng (giao hàng, lấy hàng, đổ xăng)</span>
+            </div>
             <button
                 onClick={() => window.location.href = '/'}
                 className="cursor-pointer mt-3 w-fit flex items-center gap-2 px-3 py-2 bg-black/5 rounded-lg hover:bg-black/30"
@@ -278,7 +301,8 @@ export default function MatrixView() {
             {/* LEGEND */}
             {legendOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setLegendOpen(v => !v)}>
-                    <div className="absolute w-full max-w-sm bg-white rounded-2xl p-5 m-1"  onClick={(e) => e.stopPropagation()}>
+                    <div className="absolute w-full max-w-sm bg-white rounded-2xl p-5 m-1"
+                         onClick={(e) => e.stopPropagation()}>
                         <LegendContent/>
                     </div>
                 </div>

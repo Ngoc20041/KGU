@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Quản Lý Chi Tiêu",
-    description: "Ứng dụng quản lý tài chính cá nhân",
+    title: "Thuật toán A*",
+    description: "Tìm đường đi xe giao hàng",
 };
 
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode; }>) {

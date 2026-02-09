@@ -83,7 +83,6 @@ export default function Sidebar() {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     // Auto open parent menu if child active
     useEffect(() => {

@@ -132,6 +132,7 @@ function canDoOrderSafely(vehicle: Vehicle, order: Order, stations: Point[]) { /
 
     return (fuelToPickup + fuelToDeliver + fuelToStation + SAFETY) <= vehicle.fuel
 }
+
 function orderCost(vehicle: Vehicle, order: Order): number {
     return (
         manhattan(vehicle.position, order.pickup) +
@@ -139,11 +140,7 @@ function orderCost(vehicle: Vehicle, order: Order): number {
     )
 }
 
-function findBatch(
-    vehicle: Vehicle,
-    orders: Order[],
-    stations: Point[]
-): Order[] {
+function findBatch(vehicle: Vehicle, orders: Order[], stations: Point[]): Order[] {
 
     // 1. Lấy danh sách đơn khả thi
     const candidates = orders
@@ -160,9 +157,9 @@ function findBatch(
 
     // 2. Greedy chọn batch có tổng cost nhỏ
     const batch: Order[] = []
-    const tempVehicle: Vehicle = { ...vehicle }
+    const tempVehicle: Vehicle = {...vehicle}
 
-    for (const { order } of candidates) {
+    for (const {order} of candidates) {
         if (tempVehicle.load + order.weight > tempVehicle.capacity) continue
         if (!canDoOrderSafely(tempVehicle, order, stations)) continue
 
@@ -176,8 +173,8 @@ function findBatch(
 }
 
 
-const ROWS = 45
-const COLS = 45
+const ROWS = 50
+const COLS = 50
 const CELL_SIZE = 30
 const WIDTH = COLS * CELL_SIZE
 const HEIGHT = ROWS * CELL_SIZE
@@ -214,13 +211,7 @@ function drawStaticGrid(ctx: CanvasRenderingContext2D) { // draw the static grid
     ctx.restore()
 }
 
-function drawTriangleCell(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    size: number,
-    color = "red"
-) {
+function drawTriangleCell(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, color = "red") {
     const cx = x * size + size / 2
     const cy = y * size + size / 2
     const r = size * 0.4
@@ -302,11 +293,7 @@ function getDirection(prev: Point, curr: Point): Direction {
     return "up"
 }
 
-function drawArrowLike(
-    ctx: CanvasRenderingContext2D,
-    curr: Point,
-    dir: Direction
-) {
+function drawArrowLike(ctx: CanvasRenderingContext2D, curr: Point, dir: Direction) {
     const cx = curr.x * CELL_SIZE + CELL_SIZE / 2
     const cy = curr.y * CELL_SIZE + CELL_SIZE / 2
 
@@ -352,11 +339,7 @@ function drawArrowLike(
     ctx.fill()
 }
 
-function drawVehicle(
-    ctx: CanvasRenderingContext2D,
-    prev: Point | null,
-    curr: Point
-) {
+function drawVehicle(ctx: CanvasRenderingContext2D, prev: Point | null, curr: Point) {
     if (prev) {
         ctx.clearRect(
             prev.x * CELL_SIZE,
@@ -432,10 +415,7 @@ function drawAxes(ctx: CanvasRenderingContext2D) {
     ctx.restore()
 }
 
-function drawStopMarker(
-    ctx: CanvasRenderingContext2D,
-    p: Point,
-) {
+function drawStopMarker(ctx: CanvasRenderingContext2D, p: Point,) {
     const cx = p.x * CELL_SIZE + CELL_SIZE / 2
     const cy = p.y * CELL_SIZE + CELL_SIZE / 2
 
@@ -456,12 +436,7 @@ export type LogEvent =
     | { type: "refuel"; at: Point }
     | { type: "return"; at: Point }
 
-function moveAlongPath(
-    vehicle: Vehicle,
-    path: Point[],
-    logs: LogEvent[],
-    stats: Stats
-) {
+function moveAlongPath(vehicle: Vehicle, path: Point[], logs: LogEvent[], stats: Stats) {
     for (let i = 1; i < path.length; i++) {
         vehicle.fuel -= FUEL_PER_CELL
         stats.totalDistance += 1   // 👈 mỗi ô = 1 đơn vị
@@ -476,22 +451,15 @@ function moveAlongPath(
     }
 }
 
-export function runScheduler(
-    vehicle: Vehicle,
-    orders: Order[],
-    stations: Point[],
-    rows: number,
-    cols: number,
-    depot: Point
-): { logs: LogEvent[]; stats: Stats } {
-
-
+export function runScheduler(vehicle: Vehicle, orders: Order[], stations: Point[], rows: number, cols: number, depot: Point): {
+    logs: LogEvent[];
+    stats: Stats
+} {
     const logs: LogEvent[] = []
     const stats: Stats = {
         totalDistance: 0,
         refuelCount: 0
     }
-
 
     while (orders.some(o => o.status !== "delivered")) {
 
@@ -500,7 +468,6 @@ export function runScheduler(
 
         /* ====== 2. KHÔNG CÓ BATCH → XỬ LÝ XĂNG / DEPOT ====== */
         if (batch.length === 0) {
-
 
             const station = nearestReachableStation(vehicle, stations)
 
@@ -579,8 +546,8 @@ export default function MatrixPageComponent() {
     const vehicle: Vehicle = {
         position: DEPOT,
         fuel: 5,
-        maxFuel: 10,
-        capacity: 100,
+        maxFuel: 30,
+        capacity: 30,
         load: 0
     }
 
@@ -605,7 +572,6 @@ export default function MatrixPageComponent() {
         trailCtx.translate(AXIS_PADDING, AXIS_PADDING)
 
         vehicleCtx.translate(AXIS_PADDING, AXIS_PADDING)
-
         const {logs, stats} = runScheduler(vehicle, orders, gasStations, ROWS, COLS, DEPOT)
 
         let i = 0
