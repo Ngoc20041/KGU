@@ -131,7 +131,10 @@ export default function Sidebar() {
                         <div className="p-2 bg-indigo-600 rounded-lg">
                             <Wallet className="w-6 h-6 text-white"/>
                         </div>
-                        <span className="text-xl font-bold">ExpenseMgr</span>
+                        <div className="flex flex-col">
+                        <span className="text-xl font-bold">KGU </span>
+                        <span className="text-sm font-bold">đánh giá năng lực </span>
+                    </div>
                     </div>
 
                     {/* Menu */}
