@@ -496,6 +496,36 @@ export type Database = {
           },
         ]
       }
+      expense_transaction: {
+        Row: {
+          id: string
+          amount: number
+          category: string
+          note: string | null
+          date: string
+          type: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          amount: number
+          category: string
+          note?: string | null
+          date: string
+          type: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          amount?: number
+          category?: string
+          note?: string | null
+          date?: string
+          type?: string
+          created_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       inventory_balance: {

@@ -5,8 +5,6 @@ import {usePathname} from 'next/navigation';
 import {
     Home,
     BarChart2,
-    LogIn,
-    UserPlus,
     Settings,
     Wallet,
     Van,
@@ -14,10 +12,13 @@ import {
     Network,
     Database,
     ChevronDown,
-    Waypoints, ChartNoAxesColumnDecreasing,
-    GlobeX, LucideIcon, FileQuestionMark,
+    Menu,
+    X,
+    LucideIcon,
+    FileQuestionMark,
 } from 'lucide-react';
 import {useEffect, useState} from 'react';
+import SettingsModal from '@/components/SettingsModal';
 
 type MenuChild = {
     name: string;
@@ -82,6 +83,7 @@ export default function Sidebar() {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     // Auto open parent menu if child active
     useEffect(() => {
@@ -105,17 +107,19 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* Mobile button */}
+            {/* Mobile menu button - touch target 44px+ */}
             <button
-                className="md:hidden fixed top-4 right-4 z-50 p-2 bg-white rounded-md shadow"
+                type="button"
+                aria-label={isMobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
+                className="md:hidden fixed top-3 right-3 z-50 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white dark:bg-zinc-800 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-200"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-                ☰
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
 
             <aside className={`
-                      fixed top-0 left-0 z-40 h-screen w-64 bg-white border-r border-gray-200
+                      fixed top-0 left-0 z-40 h-screen w-64 max-w-[85vw] md:max-w-none bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800
                        transition-transform duration-300 ease-in-out
                       ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
                       md:translate-x-0
@@ -208,8 +212,15 @@ export default function Sidebar() {
                     </ul>
 
                     {/* Bottom */}
-                    <div className="absolute bottom-0 left-0 w-full p-4 border-t">
-                        <button className="flex items-center w-full p-2 rounded-lg hover:bg-gray-100">
+                    <div className="absolute bottom-0 left-0 w-full p-4 border-t border-gray-200">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                setIsSettingsOpen(true);
+                            }}
+                            className="flex items-center w-full p-2 rounded-lg hover:bg-gray-100 text-gray-700"
+                        >
                             <Settings className="w-5 h-5"/>
                             <span className="ml-3">Cài đặt</span>
                         </button>
@@ -219,10 +230,16 @@ export default function Sidebar() {
 
             {isMobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40 z-30 md:hidden"
+                    className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    aria-hidden
                 />
             )}
+
+            <SettingsModal
+                open={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+            />
         </>
     );
 }

@@ -1,6 +1,7 @@
 
 'use client';
-import { useState, useCallback, useMemo } from 'react';
+
+import { useMemo } from 'react';
 import ReactFlow, {
     Node,
     Edge,
@@ -12,14 +13,13 @@ import ReactFlow, {
     MarkerType,
     Position,
     ConnectionLineType,
-    BackgroundVariant
+    BackgroundVariant,
+    ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { schemaData, TableDefinition, ColumnDefinition } from '@/lib/schema-meta';
+import { schemaData } from '@/lib/schema-meta';
 import * as dagre from 'dagre';
 import { TableNode } from './TableNode';
-import clsx from 'clsx';
-import { Network, List, LayoutGrid } from 'lucide-react';
 
 
 
@@ -33,7 +33,7 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
     const nodeWidth = 240; // Approx typical width
     // Heuristic for height based on cols (header ~36px + each row ~28px)
     const getNodeHeight = (node: Node) => {
-        const cols = (node.data.columns as ColumnDefinition[]).length;
+        const cols = Array.isArray(node.data?.columns) ? node.data.columns.length : 3;
         return 36 + (cols * 28) + 16;
     };
 
@@ -119,31 +119,20 @@ schemaData.forEach(table => {
 });
 
 
-export default function SchemaERD({ onNodeClick }: { onNodeClick?: (nodeId: string) => void }) {
-    // Layout graph on mount
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-        initialNodes,
-        initialEdges,
-        'LR' // Left-to-Right layout is usually better for ERDs
+function SchemaERDInner() {
+    const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(
+        () => getLayoutedElements(initialNodes, initialEdges, 'LR'),
+        []
     );
 
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
-    const onNodeDragStop = useCallback(
-        (event: React.MouseEvent, node: Node) => {
-            console.log('drag stop', node);
-        },
-        []
-    );
-
-    // Auto-fit on load? 
-    // ReactFlow has fitView in instance.
-
     const nodeTypes = useMemo(() => ({ table: TableNode }), []);
 
     return (
-        <div className="w-full h-full bg-gray-50 dark:bg-zinc-950" style={{ height: '100%', minHeight: '500px' }}>
+        <div className="relative w-full h-full min-h-[800px] bg-gray-50 dark:bg-zinc-950">
+            <div className="absolute inset-0">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -152,20 +141,27 @@ export default function SchemaERD({ onNodeClick }: { onNodeClick?: (nodeId: stri
                 nodeTypes={nodeTypes}
                 connectionLineType={ConnectionLineType.SmoothStep}
                 fitView
+                fitViewOptions={{ padding: 0.2 }}
                 className="bg-gray-50 dark:bg-zinc-900"
                 minZoom={0.1}
             >
                 <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
                 <Controls />
                 <MiniMap
-                    nodeColor={(n) => {
-                        // Color minimap nodes based on type or just gray
-                        return '#e2e8f0';
-                    }}
+                    nodeColor={() => '#e2e8f0'}
                     maskColor="rgba(0, 0, 0, 0.1)"
                     className="bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg shadow-sm"
                 />
             </ReactFlow>
+            </div>
         </div>
+    );
+}
+
+export default function SchemaERD() {
+    return (
+        <ReactFlowProvider>
+            <SchemaERDInner />
+        </ReactFlowProvider>
     );
 }
