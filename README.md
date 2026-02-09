@@ -10,8 +10,6 @@ Các module demo (báo cáo, COVID-19, mạng lưới đại học, database sch
 - **Biểu đồ:** [Recharts](https://recharts.org/)
 - **Đồ thị / Graph:** [React Flow](https://reactflow.dev/), [Cytoscape](https://js.cytoscape.org/), [Dagre](https://github.com/dagrejs/dagre)
 - **Backend / DB:** [Supabase](https://supabase.com/)
-- **Editor:** [Monaco Editor](https://microsoft.github.io/monaco-editor/) (React)
-- **CSV:** [PapaParse](https://www.papaparse.com/)
 
 ## Yêu cầu
 
