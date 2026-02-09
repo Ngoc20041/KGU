@@ -1,6 +1,6 @@
-# Expense Manager (Quản Lý Chi Tiêu)
+# KGU đánh giá năng lực ứng viên
 
-Ứng dụng quản lý tài chính cá nhân và các module demo (báo cáo, COVID-19, mạng lưới đại học, database schema, matrix).
+Các module demo (báo cáo, COVID-19, mạng lưới đại học, database schema, matrix).
 
 ## Công nghệ
 
@@ -22,8 +22,8 @@
 
 ```bash
 # Clone (nếu chưa có)
-git clone <repo-url>
-cd expense-manager
+git clone git@github.com:Ngoc20041/KGU.git
+cd KGU
 
 # Cài dependency
 npm install
@@ -75,23 +75,15 @@ expense-manager/
 
 ## Tính năng chính
 
-### Dashboard (Câu hỏi 2 & 3)
-
 - **Tổng quan:** Thêm/xóa giao dịch thu chi, xem số dư, phân loại chi tiêu, lịch sử giao dịch.
 - **Báo cáo:** Lọc theo tháng, biểu đồ cột (thu/chi theo ngày), biểu đồ tròn (cơ cấu chi tiêu).
-- **Theo dõi COVID-19:** Dashboard với biểu đồ dữ liệu COVID (demo).
+- **Theo dõi COVID-19:** Các biểu đồ dữ liệu COVID.
 - **Mạng lưới Đại Học:** Đồ thị mối quan hệ giữa các trường (demo).
 - **Database Schema:** Xem sơ đồ ERD / schema (demo).
 
-### Câu hỏi 1 – Matrix
+### Câu hỏi 1 
 
-- Trang **Matrix** (xe giao hàng) với layout riêng, không dùng sidebar dashboard.
-
-### Cài đặt
-
-- Bấm **Cài đặt** ở thanh bên → mở **modal** cài đặt.
-- Tùy chọn: **Tiền tệ** (VNĐ/USD), **Giao diện** (sáng/tối/hệ thống), **Ngôn ngữ**, **Thông báo**, **Tuần bắt đầu** (Chủ nhật/Thứ hai).
-- Lưu trong `localStorage`, dùng lại khi mở lại app.
+- Trang **Xe giao hàng** với layout riêng, không dùng sidebar dashboard.
 
 ## API (Câu hỏi 2 – Thu chi)
 
@@ -121,6 +113,3 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
 Sau khi cấu hình, trang **Tổng quan** và **Báo cáo** sẽ dùng dữ liệu từ Supabase. Nếu chưa cấu hình, app vẫn chạy với dữ liệu mẫu trong bộ nhớ.
 
-## License
-
-Private / MIT (tùy quy định dự án).
