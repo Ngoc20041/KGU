@@ -132,24 +132,49 @@ function canDoOrderSafely(vehicle: Vehicle, order: Order, stations: Point[]) { /
 
     return (fuelToPickup + fuelToDeliver + fuelToStation + SAFETY) <= vehicle.fuel
 }
+function orderCost(vehicle: Vehicle, order: Order): number {
+    return (
+        manhattan(vehicle.position, order.pickup) +
+        manhattan(order.pickup, order.delivery)
+    )
+}
 
-function findBatch(vehicle: Vehicle, orders: Order[], stations: Point[]): Order[] { // find a batch of orders that can be safely completed by the vehicle
+function findBatch(
+    vehicle: Vehicle,
+    orders: Order[],
+    stations: Point[]
+): Order[] {
 
+    // 1. Lấy danh sách đơn khả thi
+    const candidates = orders
+        .filter(o =>
+            o.status === "pending" &&
+            o.weight + vehicle.load <= vehicle.capacity &&
+            canDoOrderSafely(vehicle, o, stations)
+        )
+        .map(o => ({
+            order: o,
+            cost: orderCost(vehicle, o)
+        }))
+        .sort((a, b) => a.cost - b.cost) // 👈 tối ưu theo cost
+
+    // 2. Greedy chọn batch có tổng cost nhỏ
     const batch: Order[] = []
-    const tempVehicle = {...vehicle}
+    const tempVehicle: Vehicle = { ...vehicle }
 
-    for (const o of orders.filter(o => o.status === "pending")) {
-        if (tempVehicle.load + o.weight > tempVehicle.capacity) continue
+    for (const { order } of candidates) {
+        if (tempVehicle.load + order.weight > tempVehicle.capacity) continue
+        if (!canDoOrderSafely(tempVehicle, order, stations)) continue
 
-        if (!canDoOrderSafely(tempVehicle, o, stations)) continue
+        batch.push(order)
 
-        batch.push(o)
-        tempVehicle.load += o.weight
-        tempVehicle.position = o.delivery // giả lập
+        tempVehicle.load += order.weight
+        tempVehicle.position = order.delivery
     }
 
     return batch
 }
+
 
 const ROWS = 45
 const COLS = 45
@@ -544,12 +569,11 @@ export default function MatrixPageComponent() {
 
     const DEPOT: Point = {y: Math.floor(ROWS / 2), x: Math.floor(COLS / 2)}
     const orders: Order[] = [
-        // {id: 1, pickup: {y: 40, x: 20}, delivery: {y: 43, x: 23}, weight: 10, status: "pending"},
-        // {id: 6, pickup: {y: 23, x: 23}, delivery: {y: 43, x: 43}, weight: 10, status: "pending"},
-        {id: 2, pickup: {y: 10, x: 10}, delivery: {y: 27, x: 42}, weight: 10, status: "pending"},
-        {id: 3, pickup: {y: 33, x: 20}, delivery: {y: 17, x: 12}, weight: 10, status: "pending"},
-        {id: 4, pickup: {y: 10, x: 30}, delivery: {y: 44, x: 1}, weight: 10, status: "pending"},
-        {id: 5, pickup: {y: 10, x: 40}, delivery: {y: 1, x: 43}, weight: 5, status: "pending"}
+        {id: 1, pickup: {y: 10, x: 10}, delivery: {y: 27, x: 42}, weight: 10, status: "pending"},
+        {id: 2, pickup: {y: 33, x: 20}, delivery: {y: 17, x: 12}, weight: 10, status: "pending"},
+        {id: 3, pickup: {y: 10, x: 30}, delivery: {y: 44, x: 1}, weight: 10, status: "pending"},
+        {id: 4, pickup: {y: 10, x: 40}, delivery: {y: 1, x: 43}, weight: 5, status: "pending"},
+        {id: 5, pickup: {y: 23, x: 23}, delivery: {y: 43, x: 43}, weight: 10, status: "pending"}
     ]
     const gasStations: Point[] = [{x: 10, y: 20}, {x: 10, y: 14}, {x: 18, y: 20}, {x: 1, y: 14}]
     const vehicle: Vehicle = {
