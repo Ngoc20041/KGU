@@ -16,8 +16,8 @@ export default function AuthModal() {
     // Form fields
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
-        password: '',
+        email: 'buin1905@gmail.com',
+        password: 'A123123',
         confirmPassword: ''
     });
 
