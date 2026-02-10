@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import { AuthProvider } from "@/lib/contexts/AuthContext";
+import AuthModal from "@/components/AuthModal";
+
 // Import Sidebar component
 
 const geistSans = Geist({
@@ -20,26 +23,31 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+    children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            suppressHydrationWarning={true}
-        >
-        <div className="flex min-h-screen bg-gray-50">
-            {/* Sidebar Area */}
-            <Sidebar />
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                suppressHydrationWarning={true}
+            >
+                <AuthProvider>
+                    <div className="flex min-h-screen bg-gray-50">
+                        {/* Sidebar Area */}
+                        <Sidebar />
 
-            {/* Main Content Area */}
-            <main className="flex-1 md:ml-64 pt-14 pb-6 px-4 md:pt-8 md:px-8 md:pb-8 transition-all duration-300 min-w-0">
-                {children}
-            </main>
-        </div>
-        </body>
+                        {/* Main Content Area */}
+                        <main className="flex-1 md:ml-64 pt-14 pb-6 px-4 md:pt-8 md:px-8 md:pb-8 transition-all duration-300 min-w-0">
+                            {children}
+                        </main>
+
+                        {/* Global Auth Modal */}
+                        <AuthModal />
+                    </div>
+                </AuthProvider>
+            </body>
         </html>
     );
 }

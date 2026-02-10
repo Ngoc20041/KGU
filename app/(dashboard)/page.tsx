@@ -10,6 +10,7 @@ import {
   PieChart,
   AlertCircle,
 } from "lucide-react";
+import AlgorithmExplanation from "@/components/AlgorithmExplanation";
 import {
   fetchTransactions,
   addTransaction,
@@ -222,6 +223,7 @@ export default function DashboardPage() {
             <Wallet className="w-7 h-7 sm:w-8 sm:h-8 text-indigo-600 dark:text-indigo-400 shrink-0" />
             <span className="truncate">Quản Lý Thu Chi</span>
           </h1>
+          <AlgorithmExplanation taskId={2} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
@@ -230,9 +232,8 @@ export default function DashboardPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Số dư hiện tại</p>
                 <p
-                  className={`text-lg sm:text-2xl font-bold truncate ${
-                    stats.balance >= 0 ? "text-gray-900 dark:text-gray-100" : "text-red-600 dark:text-red-400"
-                  }`}
+                  className={`text-lg sm:text-2xl font-bold truncate ${stats.balance >= 0 ? "text-gray-900 dark:text-gray-100" : "text-red-600 dark:text-red-400"
+                    }`}
                 >
                   {formatCurrency(stats.balance)}
                 </p>
@@ -294,11 +295,10 @@ export default function DashboardPage() {
                           category: CATEGORIES.income[0],
                         })
                       }
-                      className={`py-2 px-4 rounded-lg text-sm font-medium border ${
-                        formData.type === "income"
+                      className={`py-2 px-4 rounded-lg text-sm font-medium border ${formData.type === "income"
                           ? "bg-green-50 border-green-200 text-green-700"
                           : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       Thu nhập
                     </button>
@@ -311,11 +311,10 @@ export default function DashboardPage() {
                           category: CATEGORIES.expense[0],
                         })
                       }
-                      className={`py-2 px-4 rounded-lg text-sm font-medium border ${
-                        formData.type === "expense"
+                      className={`py-2 px-4 rounded-lg text-sm font-medium border ${formData.type === "expense"
                           ? "bg-red-50 border-red-200 text-red-700"
                           : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
+                        }`}
                     >
                       Chi tiêu
                     </button>
@@ -464,11 +463,10 @@ export default function DashboardPage() {
                           <td className="py-2 sm:py-3 px-3 sm:px-6 text-gray-600 dark:text-gray-400 text-xs sm:text-sm whitespace-nowrap">{t.date}</td>
                           <td className="py-2 sm:py-3 px-3 sm:px-6 font-medium">
                             <span
-                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                t.type === "income"
+                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${t.type === "income"
                                   ? "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300"
                                   : "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300"
-                              }`}
+                                }`}
                             >
                               {t.category}
                             </span>
@@ -477,11 +475,10 @@ export default function DashboardPage() {
                             {t.note ?? "—"}
                           </td>
                           <td
-                            className={`py-2 sm:py-3 px-3 sm:px-6 text-right font-bold text-xs sm:text-sm whitespace-nowrap ${
-                              t.type === "income"
+                            className={`py-2 sm:py-3 px-3 sm:px-6 text-right font-bold text-xs sm:text-sm whitespace-nowrap ${t.type === "income"
                                 ? "text-green-600 dark:text-green-400"
                                 : "text-red-600 dark:text-red-400"
-                            }`}
+                              }`}
                           >
                             {t.type === "income" ? "+" : "-"}
                             {formatCurrency(t.amount)}

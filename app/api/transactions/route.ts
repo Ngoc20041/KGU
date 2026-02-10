@@ -10,8 +10,27 @@ export const dynamic = "force-dynamic";
 /** GET /api/transactions - Lấy danh sách giao dịch */
 export async function GET() {
   try {
-    const list = await getTransactions();
-    return NextResponse.json(list);
+    const { createServerSupabaseClient } = await import('@/lib/supabase');
+    const supabaseServer = await createServerSupabaseClient();
+
+    const { data: { user }, error: authError } = await supabaseServer.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { data, error } = await supabaseServer
+      .from("expense_transaction")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("date", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) throw new Error(error.message);
+
+    // We can't easily use the service here because it might use a different client instance
+    // but for now let's just return the data directly or map it if needed.
+    return NextResponse.json(data);
   } catch (err) {
     const message = err instanceof Error ? err.message : "";
     if (message === TRANSACTION_ERROR_NOT_CONFIGURED) {
@@ -60,16 +79,31 @@ export async function POST(request: Request) {
     );
   }
 
-  const payload = {
-    amount,
-    category: category.trim(),
-    note: typeof note === "string" ? note.trim() || null : null,
-    date: date.trim(),
-    type,
-  };
-
   try {
-    const data = await createTransaction(payload);
+    const { createServerSupabaseClient } = await import('@/lib/supabase');
+    const supabaseServer = await createServerSupabaseClient();
+
+    const { data: { user }, error: authError } = await supabaseServer.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = {
+      amount,
+      category: category.trim(),
+      note: typeof note === "string" ? note.trim() || null : null,
+      date: date.trim(),
+      type,
+      user_id: user.id
+    };
+
+    const { data, error } = await supabaseServer
+      .from("expense_transaction")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
     return NextResponse.json(data);
   } catch (err) {
     const message = err instanceof Error ? err.message : "";

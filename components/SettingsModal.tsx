@@ -3,45 +3,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Settings as SettingsIcon,
-  DollarSign,
-  Palette,
-  Globe,
-  Bell,
-  Calendar,
   Save,
   Check,
   X,
+  User,
+  Info,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import {
   getStoredSettings,
-  saveSettings,
   applyTheme,
   type AppSettings,
-  type Currency,
-  type Theme,
-  type Language,
 } from "@/lib/settings";
 
-const CURRENCY_OPTIONS: { value: Currency; label: string }[] = [
-  { value: "VND", label: "VNĐ" },
-  { value: "USD", label: "USD" },
-];
 
-const THEME_OPTIONS: { value: Theme; label: string }[] = [
-  { value: "light", label: "Sáng" },
-  { value: "dark", label: "Tối" },
-  { value: "system", label: "Hệ thống" },
-];
-
-const LANGUAGE_OPTIONS: { value: Language; label: string }[] = [
-  { value: "vi", label: "Tiếng Việt" },
-  { value: "en", label: "English" },
-];
-
-const START_OF_WEEK_OPTIONS: { value: 0 | 1; label: string }[] = [
-  { value: 0, label: "Chủ nhật" },
-  { value: 1, label: "Thứ hai" },
-];
 
 type Props = {
   open: boolean;
@@ -50,31 +25,28 @@ type Props = {
 
 export default function SettingsModal({ open, onClose }: Props) {
   const [settings, setSettings] = useState<AppSettings | null>(null);
-  const [saved, setSaved] = useState(false);
+  const [user, setUser] = useState<{ email?: string; id?: string } | null>(null);
 
-  const loadSettings = useCallback(() => {
+  const loadSettingsAndUser = useCallback(async () => {
     setSettings(getStoredSettings());
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      setUser({ email: data.user.email, id: data.user.id });
+    }
   }, []);
 
   useEffect(() => {
-    if (open) loadSettings();
-  }, [open, loadSettings]);
+    if (open) loadSettingsAndUser();
+  }, [open, loadSettingsAndUser]);
 
   const handleChange = <K extends keyof AppSettings>(
     key: K,
     value: AppSettings[K]
   ) => {
     setSettings((prev) => (prev ? { ...prev, [key]: value } : null));
-    setSaved(false);
   };
 
-  const handleSave = () => {
-    if (!settings) return;
-    saveSettings(settings);
-    applyTheme(settings.theme);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
+
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) onClose();
@@ -119,117 +91,33 @@ export default function SettingsModal({ open, onClose }: Props) {
             <div className="py-8 text-center text-gray-500">Đang tải...</div>
           ) : (
             <>
-              {/* Tiền tệ */}
-              <section>
-                <h3 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-indigo-600" />
-                  Tiền tệ
+              {/* Thông tin tài khoản */}
+              <section className="bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-xl border border-gray-100 dark:border-zinc-700 mb-2">
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+                  <User className="w-4 h-4 text-indigo-600" />
+                  Tài khoản
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {CURRENCY_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => handleChange("currency", opt.value)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${
-                        settings.currency === opt.value
-                          ? "bg-indigo-50 border-indigo-200 text-indigo-700"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">Email</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{user?.email || "Chưa đăng nhập"}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">UID</span>
+                    <span className="text-xs font-mono text-gray-400 truncate max-w-[150px]" title={user?.id}>{user?.id || "—"}</span>
+                  </div>
                 </div>
               </section>
 
-              {/* Giao diện */}
-              <section>
-                <h3 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-indigo-600" />
-                  Giao diện
+              {/* Thông tin ứng dụng */}
+              <section className="bg-indigo-50/50 dark:bg-indigo-900/10 p-3 rounded-xl border border-indigo-100/50 dark:border-indigo-900/20 mb-6">
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+                  <Info className="w-4 h-4 text-indigo-600" />
+                  Thông tin ứng dụng
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {THEME_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => handleChange("theme", opt.value)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${
-                        settings.theme === opt.value
-                          ? "bg-indigo-50 border-indigo-200 text-indigo-700"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              {/* Ngôn ngữ */}
-              <section>
-                <h3 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-indigo-600" />
-                  Ngôn ngữ
-                </h3>
-                <select
-                  value={settings.language}
-                  onChange={(e) =>
-                    handleChange("language", e.target.value as Language)
-                  }
-                  className="w-full rounded-lg border border-gray-300 py-2 px-3 text-sm text-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none"
-                >
-                  {LANGUAGE_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </section>
-
-              {/* Thông báo */}
-              <section>
-                <h3 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-indigo-600" />
-                  Thông báo
-                </h3>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={settings.notifications}
-                    onChange={(e) =>
-                      handleChange("notifications", e.target.checked)
-                    }
-                    className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <span className="text-sm text-gray-700">
-                    Bật thông báo nhắc nhở
-                  </span>
-                </label>
-              </section>
-
-              {/* Đầu tuần */}
-              <section>
-                <h3 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-indigo-600" />
-                  Tuần bắt đầu từ
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {START_OF_WEEK_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => handleChange("startOfWeek", opt.value)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${
-                        settings.startOfWeek === opt.value
-                          ? "bg-indigo-50 border-indigo-200 text-indigo-700"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                <div className="space-y-1 text-xs text-gray-500">
+                  <p>Phiên bản: 1.0 (beta)</p>
+                  <p>Hệ thống: KGU đánh giá năng lực</p>
                 </div>
               </section>
             </>
@@ -245,23 +133,7 @@ export default function SettingsModal({ open, onClose }: Props) {
           >
             Đóng
           </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            className="flex-1 flex items-center justify-center gap-2 min-h-[44px] py-2.5 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium touch-manipulation"
-          >
-            {saved ? (
-              <>
-                <Check className="w-5 h-5" />
-                Đã lưu
-              </>
-            ) : (
-              <>
-                <Save className="w-5 h-5" />
-                Lưu
-              </>
-            )}
-          </button>
+
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ import {
   Cell,
 } from "recharts";
 import { Calendar, Filter, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import AlgorithmExplanation from "@/components/AlgorithmExplanation";
 import { fetchTransactions, type Transaction } from "@/lib/expense-transactions";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { getStoredSettings, formatCurrency as formatCurrencySetting } from "@/lib/settings";
@@ -207,14 +208,17 @@ export default function ReportPage() {
             Báo Cáo Thống Kê
           </h1>
 
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-gray-500 dark:text-gray-400 shrink-0" />
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="flex-1 min-w-0 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-            />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <AlgorithmExplanation taskId={2} />
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-gray-500 dark:text-gray-400 shrink-0" />
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="flex-1 min-w-0 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              />
+            </div>
           </div>
         </div>
 

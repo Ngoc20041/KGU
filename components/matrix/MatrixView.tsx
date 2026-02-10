@@ -1,8 +1,9 @@
 'use client'
 
-import {useRef, useState, useEffect} from 'react'
+import { useRef, useState, useEffect } from 'react'
 import MatrixPageComponent from '@/components/matrix/MatrixPageComponent'
-import {Menu, X, TriangleAlert, ArrowBigLeft, ArrowRight} from 'lucide-react'
+import AlgorithmExplanation from '@/components/AlgorithmExplanation';
+import { Menu, X, TriangleAlert, ArrowBigLeft, ArrowRight } from 'lucide-react'
 /* =======================
    Constants
 ======================= */
@@ -15,11 +16,11 @@ const PINCH_ZOOM_SPEED = 0.004
    Pan & Zoom Hook
 ======================= */
 function usePanZoom(ref: React.RefObject<HTMLDivElement | null>, options?: {
-                        initialScale?: number
-                        initialX?: number
-                        initialY?: number
-                        centerOnInit?: boolean
-                    }
+    initialScale?: number
+    initialX?: number
+    initialY?: number
+    centerOnInit?: boolean
+}
 ) {
     const state = useRef({
         x: options?.initialX ?? 0,
@@ -37,7 +38,7 @@ function usePanZoom(ref: React.RefObject<HTMLDivElement | null>, options?: {
 
     const apply = () => {
         if (!ref.current) return
-        const {x, y, scale} = state.current
+        const { x, y, scale } = state.current
         ref.current.style.transform =
             `translate(${x}px, ${y}px) scale(${scale})`
     }
@@ -214,12 +215,12 @@ function LegendContent() {
     return (
         <div className="flex flex-col gap-3 ">
             <div className="flex items-center gap-2 border-b pb-2">
-                <TriangleAlert className="w-5 h-5 text-yellow-500"/>
+                <TriangleAlert className="w-5 h-5 text-yellow-500" />
                 <b>Chú thích ký hiệu</b>
             </div>
 
             <div className="text-sm flex items-center gap-2">
-                <ArrowRight className='text-red-600'/>
+                <ArrowRight className='text-red-600' />
                 Xe giao hàng
             </div>
             <div className="flex items-center gap-2 text-sm">
@@ -227,16 +228,16 @@ function LegendContent() {
                 <span>Điểm lấy hàng</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <span
-                  className="inline-block"
-                  style={{
-                      width: 0,
-                      height: 0,
-                      borderLeft: "6px solid transparent",
-                      borderRight: "6px solid transparent",
-                      borderBottom: "10px solid red",
-                  }}
-              />
+                <span
+                    className="inline-block"
+                    style={{
+                        width: 0,
+                        height: 0,
+                        borderLeft: "6px solid transparent",
+                        borderRight: "6px solid transparent",
+                        borderBottom: "10px solid red",
+                    }}
+                />
                 <span>Điểm giao hàng</span>
             </div>
 
@@ -252,7 +253,7 @@ function LegendContent() {
                 onClick={() => window.location.href = '/'}
                 className="cursor-pointer mt-3 w-fit flex items-center gap-2 px-3 py-2 bg-black/5 rounded-lg hover:bg-black/30"
             >
-                <ArrowBigLeft size={16}/>
+                <ArrowBigLeft size={16} />
                 Quay lại dashboard
             </button>
         </div>
@@ -286,24 +287,27 @@ export default function MatrixView() {
                     ref={viewRef}
                     className="origin-top-left will-change-transform p-3 md:ml-64 md:p-8"
                 >
-                    <MatrixPageComponent/>
+                    <MatrixPageComponent />
                 </div>
             </div>
 
             {/* MENU */}
-            <button
-                onClick={() => setLegendOpen(v => !v)}
-                className="cursor-pointer fixed bottom-4 right-4 z-[100] w-14 h-14 rounded-full bg-black text-white flex items-center justify-center shadow-lg"
-            >
-                {legendOpen ? <X/> : <Menu/>}
-            </button>
+            <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-3">
+                <AlgorithmExplanation taskId={1} />
+                <button
+                    onClick={() => setLegendOpen(v => !v)}
+                    className="cursor-pointer w-14 h-14 rounded-full bg-black text-white flex items-center justify-center shadow-lg"
+                >
+                    {legendOpen ? <X /> : <Menu />}
+                </button>
+            </div>
 
             {/* LEGEND */}
             {legendOpen && (
                 <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setLegendOpen(v => !v)}>
                     <div className="absolute w-full max-w-sm bg-white rounded-2xl p-5 m-1"
-                         onClick={(e) => e.stopPropagation()}>
-                        <LegendContent/>
+                        onClick={(e) => e.stopPropagation()}>
+                        <LegendContent />
                     </div>
                 </div>
             )}

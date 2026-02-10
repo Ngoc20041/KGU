@@ -10,6 +10,7 @@ export interface TransactionDto {
   note: string | null;
   date: string;
   type: TransactionType;
+  user_id: string | null;
   created_at: string | null;
 }
 
@@ -28,6 +29,7 @@ function rowToDto(row: Row): TransactionDto {
     note: row.note,
     date: row.date,
     type: row.type as TransactionType,
+    user_id: row.user_id,
     created_at: row.created_at,
   };
 }

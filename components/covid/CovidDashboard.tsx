@@ -25,6 +25,7 @@ import { DashboardData } from '@/lib/data/covid';
 import { Users, ShieldCheck, Brain, Heart, Calendar } from 'lucide-react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import AlgorithmExplanation from '../AlgorithmExplanation';
 
 interface CovidDashboardProps {
     initialData: DashboardData;
@@ -88,22 +89,25 @@ export function CovidDashboard({ initialData }: CovidDashboardProps) {
     }, [initialData]);
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700">
+        <div className="space-y-8 animate-in fade-in duration-700 ">
 
             {/* Header & Controls */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                <div>
-                    <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">
-                        Theo dõi COVID-19 tại Việt Nam
-                    </h1>
+                <div className="flex-1">
+                    <div className="flex items-center justify-between gap-4">
+                        <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">
+                            Theo dõi COVID-19 tại Việt Nam
+                        </h1>
+
+                    </div>
                     <p className="text-zinc-500 dark:text-zinc-400">
                         Phân tích Cảm xúc & Hành vi Cộng đồng (Dữ liệu YouGov)
                     </p>
                 </div>
-
-                <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                <AlgorithmExplanation taskId={3} />
+                <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-lg border border-zinc-200 dark:border-zinc-700">
                     <Calendar className="w-5 h-5 text-zinc-500" />
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                         <input type="date"
                             className="bg-transparent text-sm outline-none text-zinc-700 dark:text-zinc-300"
                             onChange={(e) => handleDateChange(e, 'start')}
